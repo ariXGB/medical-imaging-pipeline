@@ -98,9 +98,9 @@ if uploaded_file is not None:
 
                 st.stop()
 
-        # -----------------------------
+        
         # Gatekeeper Rejected
-        # -----------------------------
+        
 
         if not result["accepted"]:
 
@@ -115,9 +115,9 @@ if uploaded_file is not None:
                 f"{result['gatekeeper_confidence']*100:.2f}%"
             )
 
-        # -----------------------------
+       
         # Gatekeeper Accepted
-        # -----------------------------
+        
 
         else:
 

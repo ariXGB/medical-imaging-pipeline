@@ -1,9 +1,6 @@
 from PIL import Image
 
 import torch
-import torch.nn.functional as F
-
-from torchvision import transforms
 
 from model_configs.gatekeeper import Gatekeeper
 from datasets_dataloaders.dataset import val_test_transforms
@@ -33,7 +30,7 @@ def predict_validation(image: Image.Image):
 
         logits = MODEL(tensor)
 
-        probs = F.softmax(logits,dim=1)
+        probs = torch.softmax(logits,dim=1)
 
         confidence, pred = torch.max(probs,dim=1)
 

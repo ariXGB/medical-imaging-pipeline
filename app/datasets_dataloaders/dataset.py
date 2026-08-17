@@ -1,5 +1,3 @@
-# src/data/dataset.py
-
 from pathlib import Path
 
 from torchvision import datasets, transforms

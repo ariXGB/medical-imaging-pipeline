@@ -2,8 +2,6 @@ import lightning as L
 import torch
 import torch.nn as nn
 
-import torchxrayvision as xrv
-
 from torchmetrics.classification import (
     MulticlassAccuracy,
     MulticlassF1Score,

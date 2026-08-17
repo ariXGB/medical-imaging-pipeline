@@ -1,7 +1,6 @@
 from PIL import Image
 
 import torch
-import torch.nn.functional as F
 
 from model_configs.diagnoser import ChestClassifier
 from datasets_dataloaders.dataset import val_test_transforms
@@ -31,7 +30,7 @@ def predict_diagnose(image: Image.Image):
 
         logits = MODEL(tensor)
 
-        probs = F.softmax(logits,dim=1)
+        probs = torch.softmax(logits,dim=1)
 
         confidence, pred = torch.max(probs,dim=1)
 
