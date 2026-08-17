@@ -38,7 +38,7 @@ def main():
 
     trainer = Trainer(
         logger=logger,
-        max_epochs=50,
+        max_epochs=70,
         accelerator="gpu",
         devices=1,
         precision='32',
