@@ -1,0 +1,9 @@
+.vscode
+models/
+lightning_logs/
+__pycache__/
+__init__.py
+data/
+.env
+.venv
+*.ckpt
