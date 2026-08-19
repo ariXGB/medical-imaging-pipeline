@@ -1,2 +1,2 @@
-model_type,accuracy,F1,Recall
-diagnoser,0.94%,0.94%,0.94%
+test_f1,test_acc,test_recall,test_loss
+0.9434973001480103,0.9435485005378723,0.9435485005378723,0.17854906618595123

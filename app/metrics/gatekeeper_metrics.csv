@@ -1,3 +1,2 @@
-model_type,accuracy,F1,Recall
-gatekeeper,0.98%,0.98%,0.98%
-gatekeeper,0.98%,0.98%,0.98%
+test_f1,test_acc,test_recall,test_loss
+0.9791576266288757,0.9791666269302368,0.9791666269302368,0.10401153564453125

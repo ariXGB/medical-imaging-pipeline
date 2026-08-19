@@ -15,7 +15,7 @@ from torchmetrics.classification import (
 
 class Gatekeeper(L.LightningModule):
 
-    def __init__(self,num_classes,lr,weight_decay,freeze_backbone = False,CLASS_NAMES = ["Chest_X_ray","Not_Chest_x_ray"]):
+    def __init__(self,num_classes,lr,weight_decay,freeze_backbone = False,CLASS_NAMES = ["Not_Chest_X_ray","Chest_x_ray"]):
 
         super().__init__()
         self.save_hyperparameters()
@@ -120,7 +120,7 @@ class Gatekeeper(L.LightningModule):
             on_epoch=True
         )
 
-def test_step(self,batch,batch_idx):
+    def test_step(self,batch,batch_idx):
         
         x, y = batch
         logits = self(x)
@@ -157,22 +157,10 @@ def test_step(self,batch,batch_idx):
         self.test_recall,
         on_epoch=True
     )
-        self.log(
-            "test_loss", 
-            loss, 
-            on_epoch=True
-    )  
-        
-        return {
-                "model_type" : "diagnoser",
-                "accuracy" : f"{self.test_acc.compute():.2f}%",
-                "F1" : f"{self.test_f1.compute():.2f}%",
-                "Recall" : f"{self.test_recall.compute():.2f}%",
-                "loss" : loss
-            }
+      
+    def predict_step(self,batch,batch_idx,dataloader_idx=0):
 
-def predict_step(self,batch,batch_idx,dataloader_idx=0):
-
+        batch = batch[0]
         logits = self(batch)
 
         probs = torch.softmax(logits, dim=1)
@@ -182,13 +170,6 @@ def predict_step(self,batch,batch_idx,dataloader_idx=0):
         return {
                 "prediction": self.CLASS_NAMES[pred.item()],
                 "confidence": float(confidence.item()),
-                "probabilities": {
-                    cls: float(prob)
-                    for cls, prob in zip(
-                        self.CLASS_NAMES,
-                        probs[0]
-                    )
-                }
             }
         
 

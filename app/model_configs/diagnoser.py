@@ -133,24 +133,16 @@ class ChestClassifier(L.LightningModule):
         self.test_recall.update(preds,y)
     
         self.log(
-        "test_loss",
-        loss,
-        prog_bar=True,
-        on_epoch=True
-    )
-
-        self.log(
-        "test_acc",
-        self.test_acc,
-        prog_bar=True,
-        on_epoch=True
-    )
-
-        self.log(
         "test_f1",
         self.test_f1,
         prog_bar=True,
         on_epoch=True
+    )
+        self.log(
+                "test_acc",
+                self.test_acc,
+                prog_bar=True,
+                on_epoch=True
     )
 
         self.log(
@@ -162,19 +154,11 @@ class ChestClassifier(L.LightningModule):
             "test_loss", 
             loss, 
             on_epoch=True
-    )  
-        
-        return {
-                "model_type" : "diagnoser",
-                "accuracy" : f"{self.test_acc.compute():.2f}%",
-                "F1" : f"{self.test_f1.compute():.2f}%",
-                "Recall" : f"{self.test_recall.compute():.2f}%",
-                "loss" : loss
-            }
+    )
 
     def predict_step(self,batch,batch_idx,dataloader_idx=0):
 
-        
+        batch = batch[0]
         logits = self(batch)
 
         probs = torch.softmax(logits, dim=1)
@@ -196,7 +180,7 @@ class ChestClassifier(L.LightningModule):
 
     # OPTIMIZER
 
-    def configure_optimizers(self):
+    def configure_optimizers(self): # type: ignore
 
         optimizer = torch.optim.AdamW(
             filter(lambda p: p.requires_grad,self.parameters()),

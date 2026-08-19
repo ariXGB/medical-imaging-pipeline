@@ -1,48 +1,27 @@
 from PIL import Image
-
+from lightning import Trainer
 import torch
-
+from torch.utils.data import DataLoader, TensorDataset
 from model_configs.diagnoser import ChestClassifier
 from datasets_dataloaders.dataset import val_test_transforms
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-CLASS_NAMES = ["Normal","Pneumonia","Tuberculosis"]
-
 TRANSFORM = val_test_transforms
-
 MODEL = ChestClassifier.load_from_checkpoint("models/diagnoser/best.ckpt")
-
 MODEL.to(DEVICE)
-MODEL.eval()
-
-
 
 def predict_diagnose(image: Image.Image):
 
     image = image.convert("RGB")
-
     tensor = TRANSFORM(image)
-    tensor = tensor.unsqueeze(0)
+    tensor = tensor.unsqueeze(0) # type: ignore
     tensor = tensor.to(DEVICE)
 
-    with torch.no_grad():
+    trainer = Trainer(
+        accelerator="gpu",
+        devices=1
+    )
+    predict_loader = DataLoader(TensorDataset(tensor),batch_size=1)
+    res = trainer.predict(model=MODEL,dataloaders=predict_loader)[0] # type: ignore
 
-        logits = MODEL(tensor)
-
-        probs = torch.softmax(logits,dim=1)
-
-        confidence, pred = torch.max(probs,dim=1)
-
-
-    return {
-        "prediction": CLASS_NAMES[pred.item()],
-        "confidence": float(confidence.item()),
-        "probabilities": {
-            cls: float(prob)
-            for cls, prob in zip(
-                CLASS_NAMES,
-                probs[0]
-            )
-        }
-    }
+    return res

@@ -1,40 +1,27 @@
 from PIL import Image
-
+from lightning import Trainer
 import torch
-
+from torch.utils.data import DataLoader, TensorDataset
 from model_configs.gatekeeper import Gatekeeper
 from datasets_dataloaders.dataset import val_test_transforms
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-CLASS_NAMES = ["Chest_X_ray","Not_Chest_x_ray"]
-
 TRANSFORM = val_test_transforms
-
 MODEL = Gatekeeper.load_from_checkpoint("models/gatekeeper/best.ckpt")
-
 MODEL.to(DEVICE)
-MODEL.eval()
 
 def predict_validation(image: Image.Image):
 
     image = image.convert("RGB")
-
     tensor = TRANSFORM(image)
-
-    tensor = tensor.unsqueeze(0)
-
+    tensor = tensor.unsqueeze(0) # type: ignore
     tensor = tensor.to(DEVICE)
 
-    with torch.no_grad():
+    trainer = Trainer(
+        accelerator="gpu",
+        devices=1
+    )
+    predict_loader = DataLoader(TensorDataset(tensor),batch_size=1)
+    res = trainer.predict(model=MODEL,dataloaders=predict_loader)[0] # type: ignore
 
-        logits = MODEL(tensor)
-
-        probs = torch.softmax(logits,dim=1)
-
-        confidence, pred = torch.max(probs,dim=1)
-
-    return {
-        "prediction": CLASS_NAMES[pred.item()],
-        "confidence": float(confidence.item()),
-        }
+    return res
