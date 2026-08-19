@@ -13,35 +13,18 @@ checkpoint = "models/diagnoser/best.ckpt"
 
 def test():
 
-    device = torch.device(
-        "cuda" if torch.cuda.is_available() else "cpu"
-    )
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = ChestClassifier.load_from_checkpoint(
-        checkpoint
-    )
+    model = ChestClassifier.load_from_checkpoint(checkpoint)
 
     model.to(device)
     model.eval()
 
-    test_loader = create_dataloaders(
-        model="diagnoser",
-        isTraining=False
-    )
+    test_loader = create_dataloaders(model="diagnoser",isTraining=False)
 
-    acc = MulticlassAccuracy(
-        num_classes=3
-    ).to(device)
-
-    f1 = MulticlassF1Score(
-        num_classes=3,
-        average="macro"
-    ).to(device)
-
-    recall = MulticlassRecall(
-        num_classes=3,
-        average="macro"
-    ).to(device)
+    acc = MulticlassAccuracy(num_classes=3).to(device)
+    f1 = MulticlassF1Score(num_classes=3,average="macro").to(device)
+    recall = MulticlassRecall(num_classes=3,average="macro").to(device)
 
     with torch.no_grad():
 
@@ -78,8 +61,6 @@ def test():
     )
 
     log_metrics(metrics=metrics,model_type="diagnoser")
-
-
 
 if __name__ == "__main__":
     test()

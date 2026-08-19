@@ -13,35 +13,20 @@ checkpoint = "models/gatekeeper/best.ckpt"
 
 def test():
 
-    device = torch.device(
-        "cuda" if torch.cuda.is_available() else "cpu"
-    )
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-    model = Gatekeeper.load_from_checkpoint(
-        checkpoint
-    )
+    model = Gatekeeper.load_from_checkpoint(checkpoint)
 
     model.to(device)
     model.eval()
 
-    test_loader = create_dataloaders(
-        model="gatekeeper",
-        isTraining=False
-    )
+    test_loader = create_dataloaders(model="gatekeeper",isTraining=False)
 
-    acc = MulticlassAccuracy(
-        num_classes=3
-    ).to(device)
+    acc = MulticlassAccuracy(num_classes=3).to(device)
 
-    f1 = MulticlassF1Score(
-        num_classes=3,
-        average="macro"
-    ).to(device)
+    f1 = MulticlassF1Score(num_classes=3,average="macro").to(device)
 
-    recall = MulticlassRecall(
-        num_classes=3,
-        average="macro"
-    ).to(device)
+    recall = MulticlassRecall(num_classes=3, average="macro").to(device)
 
     with torch.no_grad():
 
@@ -49,7 +34,6 @@ def test():
 
             x = x.to(device)
             y = y.to(device)
-
             logits = model(x)
 
             preds = torch.argmax(logits,dim=1)
